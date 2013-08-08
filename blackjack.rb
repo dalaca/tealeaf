@@ -2,120 +2,89 @@
 #David C
 #August 2013
 
-def card_counter player
-	dealt_cards.each do |c|
-	if ['K', 'Q', 'J', '10'].include? c[0] 
-		dealt_count = player_count + 10
-	elsif c[0] == '9'
-		dealt_count = dealt_count + 9
-	elsif c[0] == '8'
-		dealt_count = dealt_count + 8
-	elsif c[0] == '7'
-		dealt_count = dealt_count + 7
-	elsif c[0] == '6'
-		dealt_count = dealt_count + 6
-	elsif c[0] == '5'
-		dealt_count = dealt_count + 5
-	elsif c[0] == '4'
-		dealt_count = dealt_count + 4
-	elsif c[0] == '3'
-		dealt_count = dealt_count + 3
-	elsif c[0] == '2'
-		dealt_count = dealt_count + 2
+def counter(hand_delt)
+
+	arr = hand_delt.collect{|c| c[1]}
+
+#counts cards
+total_count = 0
+	arr.each do |value|
+		if value == 'A'
+			total_count += 11
+			elsif value.to_i == 0 
+			total_count += 10
+			else
+			total_count += value.to_i
+		end
 	end
+		#correcting aces
+		arr.select{|e| e == "A"}.count.times do
+			total_count -= 10 if total_count > 21
+			end
+
+		total_count
 end
 
-#Make Deck
-deck_rank = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2']
-deck_suits = ['clubs', 'spades', 'hearts', 'diamonds']
 
-total_deck = deck_suits.product(deck_rank)
+#create the deck
+suits = ['Diamonds', 'Hearts', 'Spades', 'Clubs']
+ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 
-#shuffle Deck
-total_deck.shuffle!
-player_cards = []
-dealer_cards = []
+deck = suits.product(ranks)
+deck.shuffle!
 
-#player and dealer receives 2 cards
-player_cards << total_deck.pop
-dealer_cards << total_deck.pop
-player_cards << total_deck.pop
-dealer_cards << total_deck.pop
+	#deal cards
+	user_cards = []
+	dealer_cards = []
 
-#Count the cards that the players have
-player_count = card_counter(player_cards)
-dealer_count = card_counter(dealer_cards)
+	user_cards << deck.pop
+	dealer_cards << deck.pop
+	user_cards << deck.pop
+	dealer_cards << deck.pop
 
-#Show cards to user
-puts "Dealer has: #{dealer_cards[0]} and #{dealer_cards[1]}. Totaling #{dealer_count}"
-puts "You have: #{player_cards[0]} and #{player_cards[1]}. Totaling #{player_count}"
+	#calculate card values
+	user_total = counter(user_cards)
+	dealer_total = counter(dealer_cards)
 
-puts 'Would you like to hit? (y)es (n)o'
-	hit = gets.chomp.downcase
-while  hit == 'y' do
-		player_cards << total_deck.pop
-		puts "You have: #{player_cards[0]} and #{player_cards[1]} #{player_cards[2]} #{player_cards[3]}  #{player_cards[4]} "
-		puts 'Would you like to hit? (y)es (n)o'
-		hit = gets.chomp.downcase
+while dealer_total < 17 do
+	dealer_cards << deck.pop
+	dealer_total = counter(dealer_cards)
 end
 
-#values of cards
-#player_count = 0
-#player_cards.each do |c|
-#	if c[0] =='K' || c[0] == 'Q' || c[0] == 'J' || c[0] == '10'
-#		player_count = player_count + 10
-#	elsif c[0] == '9'
-#		player_count = player_count + 9
-#	elsif c[0] == '8'
-#		player_count = player_count + 8
-#	elsif c[0] == '7'
-#		player_count = player_count + 7
-#	elsif c[0] == '6'
-#		player_count = player_count + 6
-#	elsif c[0] == '5'
-#		player_count = player_count + 5
-#	elsif c[0] == '4'
-#		player_count = player_count + 4
-#	elsif c[0] == '3'
-#		player_count = player_count + 3
-#	elsif c[0] == '2'
-#		player_count = player_count + 2
-#	end
-#end
-#puts player_count
+puts "You have #{user_cards[0]} and #{user_cards[1]}, totaling #{user_total}"
+puts "Dealer has #{dealer_cards[0...5]}, totaling #{dealer_total}"
 
-#dealer_count = 0
-#dealer_cards.each do |d|
-#	if d[0] =='K' || d[0] == 'Q' || d[0] == 'J' || d[0] == '10'
-#		dealer_count = dealer_count + 10
-#	elsif d[0] == '9'
-#		dealer_count = dealer_count + 9
-#	elsif d[0] == '8'
-#		dealer_count = dealer_count + 8
-#	elsif d[0] == '7'
-#		dealer_count = dealer_count + 7
-#	elsif d[0] == '6'
-#		dealer_count = dealer_count + 6
-#	elsif d[0] == '5'
-#		dealer_count = dealer_count + 5
-#	elsif d[0] == '4'
-#		dealer_count = dealer_count + 4
-#	elsif d[0] == '3'
-#		dealer_count = dealer_count + 3
-#	elsif d[0] == '2'
-#		dealer_count = dealer_count + 2
-#	end
-#end
-
-puts dealer_count
-
-if dealer_count < player_count
-	dealer_cards << total_deck.pop
+if dealer_total > 21
+	puts 'Dealer Busts!'
+	#end program 
 end
-puts''
-puts' dealer now has'
-puts "#{dealer_count}"
 
+	action = ''
+	puts "Do you want to (h)it or (s)tay? "
+	action = gets.chomp.downcase
 
-#compare cards who ever has the higest cards wins
+#hit or stay
+while action == 'h'
+	puts "You have #{user_cards[0...5]}, totaling #{user_total}"
+	puts "Dealer has #{dealer_cards[0...5]}, totaling #{dealer_total}"
+	puts "Do you want to (h)it or (s)tay? "
+	action = gets.chomp.downcase
+		if action == 'h'
+			user_cards << deck.pop
+			user_total = counter(user_cards)
+		end
+end
 
+if dealer_total > 21
+	puts 'Dealer Busts'
+elsif dealer_total == user_total
+	puts 'Tie Game'
+elsif user_total > 21
+	puts 'You Busted'
+elsif user_total > dealer_total
+	puts 'You Win'
+elsif user_total < dealer_total
+	puts 'you Lose'
+end
+
+		

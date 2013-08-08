@@ -21,7 +21,7 @@ total_count = 0
 		total_count
 end
  
-def hit_stay(action, user_cards)
+def hit_stay(action, user_cards, deck)
 	if action == 'h'
 		user_cards << deck.pop
 		else 
