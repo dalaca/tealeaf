@@ -21,6 +21,15 @@ total_count = 0
 		total_count
 end
  
+def hit_stay(action, user_cards)
+	if action == 'h'
+		user_cards << deck.pop
+		else 
+		puts "ok, you stay"
+ 	end
+ 
+end
+
  
 
 #create the deck
@@ -56,21 +65,12 @@ deck.shuffle!
 	puts "Do you want to (h)it or (s)tay? "
 	action = gets.chomp.downcase
 
-
-
-
-	while action == 'h' do
-		#player hits
-		user_cards << deck.pop
-		user_total = counter(user_cards)
+	while user_total <= dealer_total || dealer_total > 21 do
+		hit_stay(action, user_cards)
+			user_total = counter(user_cards)
 		puts "You now have #{user_cards[0...6]} totaling #{user_total}"
 		puts "(h)it or (s)tay?"
 		action = gets.chomp.downcase
-		if action == 's'
-			puts 'ok, you stay'
-		end		
-	
-	end
 	#win or lose
 	if user_total > 21
 		puts "BUST!"
@@ -87,5 +87,7 @@ deck.shuffle!
 	end
 
 
+	end	
+	
 
  
