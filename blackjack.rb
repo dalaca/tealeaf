@@ -21,7 +21,7 @@ total_count = 0
 		#correcting aces
 		arr.select{|e| e == "A"}.count.times do
 			if total_count > 21
-			total_count -= 10
+				total_count -= 10
 			end
 		end
 		return total_count
@@ -30,11 +30,7 @@ end
 def restart(replay)
   puts "Do you want to play again? 1) Yes 2) No"
   replay = gets.chomp
-  if replay == '1'
-  replay
-	elsif replay =='2'
-		puts 'good bye'
-	end
+  	replay
 end
 
 #create the deck
@@ -48,7 +44,7 @@ deck.shuffle!
 
 replay = '0'
 
-while replay != '2' || deck != [] 
+while replay != '2' 
 
 	puts 'Time to play BLACKJACK!'
 	puts ''
