@@ -1,3 +1,6 @@
+#Black Jack
+#David C
+#August 2013
 
 def counter(hand_delt)
 
@@ -14,23 +17,25 @@ total_count = 0
 			total_count += value.to_i
 		end
 	end
+
 		#correcting aces
 		arr.select{|e| e == "A"}.count.times do
-			total -= 10 if total_count > 21
-		 end
-		total_count
-end
- 
-def hit_stay(action, user_cards, deck)
-	if action == 'h'
-		user_cards << deck.pop
-		else 
-		puts "ok, you stay"
- 	end
- 
+			if total_count > 21
+			total_count -= 10
+			end
+		end
+		return total_count
 end
 
- 
+def restart(replay)
+  puts "Do you want to play again? 1) Yes 2) No"
+  reply = gets.chomp
+  while replay != "1" && replay != "2"
+    puts "Please enter 1) Yes 2) No "
+    replay = gets.chomp
+  end
+  return replay
+end
 
 #create the deck
 suits = ['Diamonds', 'Hearts', 'Spades', 'Clubs']
@@ -43,6 +48,13 @@ deck.shuffle!
 	user_cards = []
 	dealer_cards = []
 
+replay = '0'
+
+while replay != '2' || deck != [] 
+
+	puts 'Time to play BLACKJACK!'
+	puts ''
+
 	user_cards << deck.pop
 	dealer_cards << deck.pop
 	user_cards << deck.pop
@@ -51,43 +63,49 @@ deck.shuffle!
 	#calculate card values
 	user_total = counter(user_cards)
 	dealer_total = counter(dealer_cards)
-	
-	dealer_counter = 0 
-	user_counter = 0
-	
-	while dealer_total < 17 do
+
+	while dealer_total < 17
 		dealer_cards << deck.pop
 		dealer_total = counter(dealer_cards)
+		
 	end
 
-	puts "You have #{user_cards[0]} and #{user_cards[1]}, totaling #{user_total}"
-	puts "Dealer has #{dealer_cards[0...5]}, totaling #{dealer_total}"
-	puts "Do you want to (h)it or (s)tay? "
-	action = gets.chomp.downcase
 
-	while user_total <= dealer_total || dealer_total > 21 do
-		hit_stay(action, user_cards)
+	puts ''
+
+	action = '0'
+	while action != '2' 
+		puts "You have #{user_cards[0...5]}, totaling #{user_total}"
+		puts "Dealer has #{dealer_cards[0...5]}, totaling #{dealer_total}"
+		puts "Do you want to 1)hit or 2)stay?"
+		action = gets.chomp
+		#player hits
+		if action == '1'
+			user_cards << deck.pop
 			user_total = counter(user_cards)
-		puts "You now have #{user_cards[0...6]} totaling #{user_total}"
-		puts "(h)it or (s)tay?"
-		action = gets.chomp.downcase
-	#win or lose
-	if user_total > 21
-		puts "BUST!"
-		dealer_counter += 1
-	elsif user_total > dealer_total
-		puts "you win"
-		user_counter += 1
-	elsif user_total < dealer_total
-		puts "you lose"
-		dealer_counter += 1
-	elsif dealer_total > 21
-		puts "Dealer Bust!"
-		user_counter += 1
+		#player stays
+		elsif action == '2'
+			puts "You stayed with #{user_cards[0...5]}, totaling #{user_total}"
+		end
 	end
 
 
-	end	
-	
+	#compare cards
+	if dealer_total > 21
+		puts 'Dealer Busts'
+		replay = restart(replay)
+	elsif dealer_total == user_total
+		puts 'Tie Game'
+		replay = restart(replay)
+	elsif user_total > 21
+		puts 'You Busted'
+		replay = restart(replay)
+	elsif user_total > dealer_total
+		puts 'You Win'
+		replay = restart(replay)
+	elsif user_total < dealer_total
+		puts 'you Lose'
+		replay = restart(replay)
+	end
+end
 
- 
